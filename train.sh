@@ -69,5 +69,5 @@ torchrun --nproc_per_node=$NPROC_PER_NODE train.py \
   --warmup-ratio 0.1 \
   --lr-scale 1.5 \
   --regular-weight 0.05 \
-  --train-json /home/aorus/He/qwen-vl-finetune/SAMM_data/SAMM-with-CAP/train1.json \
-  --val-json /home/aorus/He/qwen-vl-finetune/SAMM_data/SAMM-with-CAP/val.json
+  --train-json /scratch-shared/khe/hjl/SAMM/SAMM-with-CAP/train.json \
+  --val-json /scratch-shared/khe/hjl/SAMM/SAMM-with-CAP/val.json
