@@ -303,7 +303,7 @@ class OriDGM4Dataset(Dataset):
         ann = self.data[index]
         label = ann['fake_cls'].replace('text_attribute', 'text_swap')
 
-        img_dir = os.path.join('/scratch-shared/khe/hjl/SAMM/', ann['image'])
+        img_dir = os.path.join('/scratch-shared/npu/qwen/SAMM_data', ann['image'])
         #
         # print(ann['image'])
         # img_dir = ann['image']
