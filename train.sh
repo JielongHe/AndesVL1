@@ -30,7 +30,7 @@ fi
 echo "✅ CUDA_HOME = $CUDA_HOME"
 
 # =============== 激活 Conda 环境 ===============
-source /home/khe/miniconda3/bin/activate qwen
+source /home/npu/miniconda3/bin/activate qwen
 
 # =============== 跳过 DeepSpeed CUDA 算子编译（关键！）===============
 export DS_SKIP_CUDA_BUILD=1
@@ -69,5 +69,5 @@ torchrun --nproc_per_node=$NPROC_PER_NODE train.py \
   --warmup-ratio 0.1 \
   --lr-scale 1.5 \
   --regular-weight 0.05 \
-  --train-json /scratch-shared/khe/hjl/SAMM/SAMM-with-CAP/train.json \
-  --val-json /scratch-shared/khe/hjl/SAMM/SAMM-with-CAP/val.json
+  --train-json /scratch-shared/npu/qwen/SAMM_data/SAMM-with-CAP/train.json \
+  --val-json /scratch-shared/npu/qwen/SAMM_data/SAMM-with-CAP/val.json
