@@ -5,7 +5,7 @@ from transformers.modeling_utils import PreTrainedModel
 from transformers.utils import  logging
 from .configuration_andesvl import AndesVLConfig
 from .modeling_aimv2_navit_rope import Aimv2VisionModel
-
+from torchvision.transforms.functional import hflip, resize
 logger = logging.get_logger(__name__)
 
 class AndesVLForConditionalGeneration(PreTrainedModel):
@@ -138,10 +138,7 @@ class AndesVLForConditionalGeneration(PreTrainedModel):
             flated_pixel_values, image_grid_hw = self.get_flated_pixel_values(pixel_values)
             input_embeds = self.get_vit_embeds_and_merge(flated_pixel_values, image_grid_hw, input_embeds, image_flags)
 
-        print(f"input_ids shape: {input_ids.shape}")
-        # print(f"labels shape: {labels.shape}")
-        print(f"attention_mask shape: {attention_mask.shape}")
-
+  
         outputs = self.language_model.generate(
             input_ids=input_ids,
             inputs_embeds=input_embeds,
@@ -168,6 +165,7 @@ class AndesVLForConditionalGeneration(PreTrainedModel):
         pixel_values = []
         image_tokens = []
         for image in images:
+            image = resize(image, [504, 504], interpolation=Image.BICUBIC)
             if isinstance(image, (tuple, list)):
                 image, detail = image
             else:
@@ -207,18 +205,18 @@ class AndesVLForConditionalGeneration(PreTrainedModel):
                         temp += "<image>"
                         images.append([load_image(sub_content['image_url']['url']), sub_content['image_url'].get("detail",'low')])
                     elif sub_content['type']=='image':
-                        temp += "<image>"
+                        # temp += "<image>"
                         images.append(load_image(sub_content['image']))
                 prompt += f"<|im_start|>{role}\n{temp}{tokenizer.eos_token}\n"
             else:
                 raise ValueError(f"非法的内容{content}")
         prompt += f"<|im_start|>assistant\n"
-        # return self.completion(prompt, images, tokenizer, image_processor, **kwargs)
-        thinking = 'thinking' in kwargs and kwargs['thinking']
-        if 'thinking' in kwargs:
-            kwargs.pop('thinking')
-        prompt += f"<|im_start|>assistant\n" + ('<think>' if thinking else '')
-        return ('<think>' if thinking else '') + self.completion(prompt, images, tokenizer, image_processor, **kwargs)
+        return self.completion(prompt, images, tokenizer, image_processor, **kwargs)
+        # thinking = 'thinking' in kwargs and kwargs['thinking']
+        # if 'thinking' in kwargs:
+        #     kwargs.pop('thinking')
+        # prompt += f"<|im_start|>assistant\n" + ('<think>' if thinking else '')
+        # return ('<think>' if thinking else '') + self.completion(prompt, images, tokenizer, image_processor, **kwargs)
 
 ########################
 ###下面是图像处理的代码###
